@@ -34,12 +34,6 @@ func main() {
 	var success, sleep int
 	var dataE int
 
-	// for testing template
-	// data := []Data{
-	// 	{Email: "needkopi@gmail.com", Name: "chandra"},
-	// 	{Email: "hadihammurabi@gmail.com", Name: "robi"},
-	// }
-
 	fmt.Println("starting")
 	for _, val := range data {
 		if sleep == 5 {
