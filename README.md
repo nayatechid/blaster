@@ -12,6 +12,6 @@ go build *.go
 require minimum go version 1.16 
 
 # TODO
-1. trigger using REST API
-2. upload mail destinations
-3. upload template
+1. send arguments from os.Args
+2. mail destinations using file
+3. mail template using file
