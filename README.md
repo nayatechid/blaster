@@ -1,14 +1,10 @@
 ## how to run 
+go run *.go --subject "Email Subject" --receivers receivers.csv --template template.html
 
-go run *.go
-
-**or**
-
-## hot to build
-
+## how to build
 go build *.go
 
-
+## pre-requisites
 require minimum go version 1.16 
 
 # TODO
