@@ -8,8 +8,7 @@ import (
 	"os"
 )
 
-func SendReminder(t *template.Template, data Data) error {
-
+func SendMail(subject string, t *template.Template, data Data) error {
 	var (
 		smtpAddr = fmt.Sprintf("%s:%s", os.Getenv("SMTP_HOST"), os.Getenv("SMTP_PORT"))
 		auth     = smtp.PlainAuth("", os.Getenv("SMTP_EMAIL"), os.Getenv("SMTP_PASSWORD"), os.Getenv("SMTP_HOST"))
@@ -20,10 +19,9 @@ func SendReminder(t *template.Template, data Data) error {
 		return err
 	}
 
-	var message = buildMessage(data.Email, os.Getenv("SUBJECT"), tmp.Bytes())
-
+	var message = buildMessage(data.Email, subject, tmp.Bytes())
 	if err := smtp.SendMail(smtpAddr, auth, os.Getenv("SMTP_EMAIL"), []string{data.Email}, message); err != nil {
-		fmt.Println("disini, ", err.Error())
+		fmt.Println("disini, ", err)
 		return err
 	}
 
