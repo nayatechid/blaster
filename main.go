@@ -2,9 +2,8 @@ package main
 
 import (
 	"embed"
-	"encoding/json"
-	"fmt"
 	"html/template"
+	"os"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -19,53 +18,25 @@ type Data struct {
 }
 
 func main() {
-
-	if err := godotenv.Load(".env"); err != nil {
-		panic(err)
-	}
-
-	t, err := template.ParseFS(Template, "template.html")
+	command, err := ParseArguments(os.Args[1:])
 	if err != nil {
 		panic(err)
 	}
 
-	var data = CollectData()
-	var dataError []Data
-	var success, sleep int
-	var dataE int
-
-	fmt.Println("starting")
-	for _, val := range data {
-		if sleep == 5 {
-			time.Sleep(2 * time.Minute)
-			sleep = 0
-		}
-		sleep++
-		fmt.Printf("sending reminder to --> %s ", val.Email)
-		if err := SendReminder(t, val); err != nil {
-			fmt.Printf("error sending interview to --> %s, with error %v", val.Email, err.Error())
-			dataError = append(dataError, val)
-			dataE++
-			continue
-		}
-		success++
-		fmt.Println("email sended")
+	err = godotenv.Load()
+	if err != nil {
+		panic(err)
 	}
-	fmt.Println("finished")
 
-	if len(dataError) == 0 {
-		fmt.Printf("data success --> %d\n", success)
-		fmt.Println("no data error")
-	} else {
-		jsonB, err := json.Marshal(dataError)
-		if err != nil {
-			fmt.Println(dataError)
-			fmt.Println(err.Error())
-			return
-		}
-		fmt.Printf("data success --> %d\n", success)
-
-		fmt.Printf("data error --> %d\n", dataE)
-		fmt.Println(string(jsonB))
+	t, err := template.ParseFS(Template, command["template"])
+	if err != nil {
+		panic(err)
 	}
+
+	receivers, err := CollectReceiversFromCSV(command["receivers"], 1, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	BlastToEmail(command["subject"], receivers, t, time.Minute)
 }

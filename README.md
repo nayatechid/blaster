@@ -12,6 +12,6 @@ go build *.go
 require minimum go version 1.16 
 
 # TODO
-1. send arguments from os.Args
-2. mail destinations using file
-3. mail template using file
+1. [x] send arguments from os.Args
+2. [x] mail destinations using csv file
+3. [x] mail template using html file
