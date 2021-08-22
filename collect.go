@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/csv"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -60,4 +62,32 @@ func CollectData() []Data {
 	}
 
 	return rows
+}
+
+func CollectReceiversFromCSV(file string, startIndex uint, lastIndex uint) ([][]string, error) {
+	if lastIndex != 0 && lastIndex < startIndex {
+		return nil, errors.New("last index have to larger than start index")
+	}
+
+	fileContent, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+
+	reader := csv.NewReader(fileContent)
+	records, err := reader.ReadAll()
+	if err != nil {
+		fileContent.Close()
+		return nil, err
+	}
+
+	if startIndex != 0 {
+		records = records[startIndex:]
+	}
+
+	if lastIndex != 0 {
+		records = records[:lastIndex]
+	}
+
+	return records, nil
 }
